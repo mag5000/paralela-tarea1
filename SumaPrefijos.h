@@ -1,9 +1,9 @@
 #ifndef ARRAY_SUM_H
 #define ARRAY_SUM_H
-
+#include <iostream>
 #include <vector>
-#include <cmath>
-#include <threads>
+#include <thread>
+
 using namespace std;
 
 
@@ -12,10 +12,11 @@ public:
     // Constructor
     SumaPrefijos();
 
-    // Método para calcular la suma acumulativa
+    // Método secuencial
     vector<int> sumaSecuencial(const vector<int>& inputArray);
-//    vector<int> sumaParalelo1(const vector<int>& inputArray);
-//    vector<int> sumaParalelo2(const vector<int>& inputArray);
+
+    // Método con n-1 hilos  
+    void hillisSteeleScan(vector<int>& input);
 
 private:
 
