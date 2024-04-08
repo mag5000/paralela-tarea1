@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 using namespace std;
 
@@ -17,6 +19,10 @@ public:
 
     // Método con n-1 hilos  
     void hillisSteeleScan(vector<int>& input);
+    void algoritmo2(vector<int>& input,  int thread_count);
+
+
+    
 
 private:
 

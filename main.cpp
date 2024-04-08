@@ -27,7 +27,10 @@ int main() {
 
 
 int main() {
-    vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    vector<int> data = {1,2,3,4,5,6,7,8,0,0,0,0,0,0,0,0};
+   // vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8};
+   // vector<int> data = {4,3,5,8,2,6,3,1};
+
     // Se crea ear una instancia de SumaPrefijos
     SumaPrefijos sm;
     for (int num : data) {
@@ -35,7 +38,7 @@ int main() {
     }
     cout << endl;
 
-    sm.hillisSteeleScan(data);
+    sm.algoritmo2(data, 4);
 
 
     cout << " Resultado: " << endl;
