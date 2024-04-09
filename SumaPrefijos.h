@@ -14,17 +14,17 @@ public:
     // Constructor
     SumaPrefijos();
 
-    // Método secuencial
-    vector<int> sumaSecuencial(const vector<int>& inputArray);
-
-    // Método con n-1 hilos  
-    void hillisSteeleScan(vector<int>& input);
-    void algoritmo2(vector<int>& input,  int thread_count);
-
+    // Métodos solicitados
+    void secuencial(vector<int>& input);                    // Secuencial
+    void paraleloV1(vector<int>& input,  int thread_count); // Hilos definido por el usuario
+    void paraleloV2(vector<int>& input);                    // n-1 hilos  
+    
+    // Métodos para tomar tiempos de ejecución de los algoritmos
+    long long secuencialTime(vector<int>& input);
+    long long paraleloV1Time(vector<int>& input,  int thread_count);
+    long long paraleloV2Time(vector<int>& input);
 
     
-
-private:
 
 };
 

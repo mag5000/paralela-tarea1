@@ -3,18 +3,95 @@ using namespace std;
 
 SumaPrefijos::SumaPrefijos() {}
 
-vector<int> SumaPrefijos::sumaSecuencial(const vector<int>& inputArray) {
-    vector<int> sumArray;
-    int sum = 0;
-    for (int num : inputArray) {
-        sum += num;
-        sumArray.push_back(sum);
+void SumaPrefijos::secuencial(vector<int>& input) {
+   
+    int n = input.size();
+    for (int i = 1; i < n; ++i) {
+        input[i]+=input[i-1];
     }
-    return sumArray;
+
+    // Imprimir los resultados.
+    cout << "resultado secuencial: "<<endl; 
+    for (int num : input) {
+        cout << num << ' ';
+    }
+    cout << endl;
+
 }
 
 
-void SumaPrefijos::hillisSteeleScan(vector<int>& input) {
+
+
+void SumaPrefijos::paraleloV1(vector<int>& input, int thread_count) {
+       
+    int n = input.size();
+    vector<thread> threads;
+    vector<int> partial_sums(thread_count);
+
+    // Primera parte: sumas parciales en cada segmento.
+    for (int i = 0; i < thread_count; ++i) {
+        threads.emplace_back([&, i] {
+            int start = i * n / thread_count;
+            int end = ((i + 1) * n / thread_count);
+
+            for (int j = start + 1; j < end; ++j) {
+                input[j] += input[j - 1];
+            }
+
+            partial_sums[i] = input[end - 1];  // Guardar la suma parcial.
+        });
+    }
+
+
+    for (auto& th : threads) {
+        th.join();
+    }
+    threads.clear();
+
+    // Imprimir los resultados parciales.
+    // for (int num : input) {
+    //     cout << num << ' ';
+    // }
+    // cout << endl;
+
+    // Segunda parte: sumar las sumas parciales con el algoritmo V2
+    paraleloV2(partial_sums); 
+
+    // Imprimir los resultados parciales.
+    //for (int num : input) {
+    //    cout << num << ' ';
+    //}
+    //cout << endl;
+
+
+    // Tercera parte: actualizar el arreglo con las sumas parciales.
+    for (int i = 0; i < thread_count - 1; ++i) {  // No es necesario para el último segmento.
+        threads.emplace_back([&, i] {
+            int start = (i + 1) * n / thread_count;  // Comenzar desde el primer elemento del siguiente segmento.
+            int end = (i + 2) * n / thread_count;
+
+            for (int j = start; j < end; ++j) {
+                input[j] += partial_sums[i];
+            }
+        });
+    }
+
+    for (auto& th : threads) {
+        th.join();
+    }
+
+    // Imprimir los resultados.
+    //cout << "resultado paralelo v1: "<<endl;
+    //for (int num : input) {
+    //    cout << num << ' ';
+    //}
+    //cout << endl;
+}
+
+
+
+
+void SumaPrefijos::paraleloV2(vector<int>& input) {
     int n = input.size();
     int thread_count = n-1;
     int hilosActivos = n-1;
@@ -50,185 +127,52 @@ void SumaPrefijos::hillisSteeleScan(vector<int>& input) {
             th.join();
         }
         
-        for (int num : input) {
-            cout << num << ' ';
-        }
-        cout << endl;
+        //cout << "resultado paralelo v2: "<<endl;
+        //for (int num : input) {
+        //    cout << num << ' ';
+        //}
+        //cout << endl;
 
         threads.clear();
     }
 }
 
+// Funciones para tomar el tiempo de cada algoritmo ========================================================================
+// =========================================================================================================================
 
-void SumaPrefijos::algoritmo2(vector<int>& input, int thread_count) {
-    int n = input.size();
-    vector<thread> threads;
+// Tiempo de ejecución suma secuencial
+long long SumaPrefijos::secuencialTime(vector<int>& input){
 
+    auto start_time = chrono::steady_clock::now();
+    secuencial(input);
+    auto end_time = chrono::steady_clock::now();
+    long long duration = chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
 
-    // Lanzar hilos para realizar las sumas en paralelo.
-    for (int i = 0; i < thread_count; ++i) {
-        threads.emplace_back([&, i]() {
+    return duration;
 
-            int start = i * n / thread_count;
-            int end = ((i + 1) * n / thread_count);
-
-            cout << "inicio: " << start << "  -  fin: " << end << endl;  
-
-            for (int j = start+1; j < end; ++j) {
-                    
-                input[j] += input[j - 1]; // Sumar el valor del paso anterior 
-                
-            }
-
-        });
-    }
-
-    for (auto& th : threads) {
-        th.join();
-    }
-    threads.clear();
-
-
-    // Lanzar hilos para realizar las sumas en paralelo de los valores parciales.
-    for (int step = (n/thread_count); step < n; step *= 2) {
-        
-        for (int i = 0; i < n/step; ++i) {
-
-            threads.emplace_back([&, i, step]() {
-       
-//                cout << "inicio: " << start << "  -  fin: " << end << endl;  
-                int posic1 =  ( step - 1 ) * i
-                int posic2 =  ( ( step - 1 ) * i ) + step
-                                    
-                input[posic2] += input[posic1]; // Sumar el valor del paso anterior              
-    
-
-            });
-        }
-
-        for (auto& th : threads) {
-            th.join();
-        }
-        threads.clear();
-
-    }
-
-
-
-
-
-
-
-
-
-
-    //Se imprimen los resultados
-    for (int num : input) {  
-        cout << num << ' ';
-    }
-    cout << endl;  
-    
 }
 
+// Tiempo de ejecución de la suma en paralelo usando un numero de hilos definido por el usuario
+long long SumaPrefijos::paraleloV1Time(vector<int>& input, int thread_count){
 
+    auto start_time = chrono::steady_clock::now();
+    paraleloV1(input, thread_count);
+    auto end_time = chrono::steady_clock::now();
+    long long duration = chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
 
+    return duration;
 
-
-
-
-
-
-
-/*
-
-void SumaPrefijos::Algoritmov2(vector<int>& input) {
-    int n = input.size();
-    int thread_count = n-1;
-    vector<thread> threads;
-
-    // Realizar el algoritmo de Hillis-Steele en log(n) pasos.
-    for (int step = 1; step < n; step *= 2) {
-
-        // Lanzar hilos para realizar las sumas en paralelo.
-        for (int i = 0; i < thread_count; ++i) {
-            threads.emplace_back([&, i, step]() {
-
-                int start = i * n / thread_count;
-                int end = ((i + 1) * n / thread_count)-1;
-
-                for (int j = start+1; j < end; ++j) {
-                    
-                    input[j] += input[j - step]; // Sumar el valor del paso anterior 
-                
-                }
-
-            });
-        }
-
-        for (auto& th : threads) {
-            th.join();
-        }
-
-        for (int num : input) {  
-            cout << num << ' ';
-        }
-        cout << endl;
-
-        threads.clear();
-    }
 }
 
+//Tiempo de ejecución de la suma utilizando n-1 hilos
+long long SumaPrefijos::paraleloV2Time(vector<int>& input){
 
-void SumaPrefijos::hillisSteeleScan(vector<int>& input) {
-    int n = input.size();
-    int thread_count = n-1;
-    vector<thread> threads;
-    vector<int> temp(input.size(), 0); // Vector temporal para almacenar resultados intermedios
+    auto start_time = chrono::steady_clock::now();
+    paraleloV2(input);
+    auto end_time = chrono::steady_clock::now();
+    long long duration = chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
 
+    return duration;
 
-    // Realizar el algoritmo de Hillis-Steele en log(n) pasos.
-    for (int step = 1; step < n; step *= 2) {
-
-    //    if (step == 1) {
-    //        temp[0] = input[0]; // Copiar el primer valor 
-    //    }
-
-             
-        for (int i = step; i <= thread_count; i++ ) { 
-             
-            threads.emplace_back([&, i, step]() {
-
-                if (i == step) {
-                    temp[i-1] = input[i-1]; // Copiar el valor actual al vector temporal    
-                }
-
-             //   if (i - step <= 0) {
-             //       temp[i-1] = input[i-1]; // Copiar el valor actual al vector temporal    
-             //   }
-              
-                temp[i] = input[i] + input[i - step]; // Sumar el valor del paso anterior    
-                                    
-            });
-        }
-        
-        for (auto& th : threads) {
-            th.join();
-        }
-
-        input.swap(temp); // Intercambiar los vectores para la siguiente iteración
-        
-        for (int num : input) {
-            cout << num << ' ';
-        }
-        cout << endl;
-
-        threads.clear();
-    }
 }
 
-
-
-
-
-
-*/
