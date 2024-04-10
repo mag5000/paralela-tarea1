@@ -1,4 +1,61 @@
-size, algorithm, time
-16,Suma Secuencial,22
-16,Paralelo V1,1163
-16,Paralelo V2,2189
+Tamaño,Hilos,algoritmo,tiempo
+64,2,Paralelo V1,210
+64,4,Paralelo V1,514
+64,8,Paralelo V1,1659
+64,16,Paralelo V1,4448
+64,32,Paralelo V1,9205
+64,1,Secuencial,0
+64,2,Paralelo V1,323
+64,4,Paralelo V1,626
+64,8,Paralelo V1,1840
+64,16,Paralelo V1,4104
+64,32,Paralelo V1,9976
+64,1,Secuencial,0
+64,2,Paralelo V1,452
+64,4,Paralelo V1,646
+64,8,Paralelo V1,1762
+64,16,Paralelo V1,4032
+64,32,Paralelo V1,9931
+64,1,Secuencial,0
+64,2,Paralelo V1,218
+64,4,Paralelo V1,467
+64,8,Paralelo V1,1667
+64,16,Paralelo V1,4813
+64,32,Paralelo V1,10516
+64,1,Secuencial,0
+64,2,Paralelo V1,310
+64,4,Paralelo V1,542
+64,8,Paralelo V1,1671
+64,16,Paralelo V1,4237
+64,32,Paralelo V1,9980
+64,1,Secuencial,0
+64,2,Paralelo V1,190
+64,4,Paralelo V1,564
+64,8,Paralelo V1,2059
+64,16,Paralelo V1,4752
+64,32,Paralelo V1,9853
+64,1,Secuencial,0
+64,2,Paralelo V1,268
+64,4,Paralelo V1,466
+64,8,Paralelo V1,1653
+64,16,Paralelo V1,4363
+64,32,Paralelo V1,9646
+64,1,Secuencial,0
+64,2,Paralelo V1,258
+64,4,Paralelo V1,478
+64,8,Paralelo V1,1562
+64,16,Paralelo V1,4376
+64,32,Paralelo V1,9726
+64,1,Secuencial,0
+64,2,Paralelo V1,228
+64,4,Paralelo V1,511
+64,8,Paralelo V1,1539
+64,16,Paralelo V1,4091
+64,32,Paralelo V1,9955
+64,1,Secuencial,0
+64,2,Paralelo V1,185
+64,4,Paralelo V1,539
+64,8,Paralelo V1,1882
+64,16,Paralelo V1,4818
+64,32,Paralelo V1,9769
+64,1,Secuencial,0

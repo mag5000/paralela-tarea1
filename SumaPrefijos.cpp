@@ -10,16 +10,7 @@ void SumaPrefijos::secuencial(vector<int>& input) {
         input[i]+=input[i-1];
     }
 
-    // Imprimir los resultados.
-    cout << "resultado secuencial: "<<endl; 
-    for (int num : input) {
-        cout << num << ' ';
-    }
-    cout << endl;
-
 }
-
-
 
 
 void SumaPrefijos::paraleloV1(vector<int>& input, int thread_count) {
@@ -42,27 +33,13 @@ void SumaPrefijos::paraleloV1(vector<int>& input, int thread_count) {
         });
     }
 
-
     for (auto& th : threads) {
         th.join();
     }
     threads.clear();
 
-    // Imprimir los resultados parciales.
-    // for (int num : input) {
-    //     cout << num << ' ';
-    // }
-    // cout << endl;
-
     // Segunda parte: sumar las sumas parciales con el algoritmo V2
     paraleloV2(partial_sums); 
-
-    // Imprimir los resultados parciales.
-    //for (int num : input) {
-    //    cout << num << ' ';
-    //}
-    //cout << endl;
-
 
     // Tercera parte: actualizar el arreglo con las sumas parciales.
     for (int i = 0; i < thread_count - 1; ++i) {  // No es necesario para el último segmento.
@@ -79,13 +56,7 @@ void SumaPrefijos::paraleloV1(vector<int>& input, int thread_count) {
     for (auto& th : threads) {
         th.join();
     }
-
-    // Imprimir los resultados.
-    //cout << "resultado paralelo v1: "<<endl;
-    //for (int num : input) {
-    //    cout << num << ' ';
-    //}
-    //cout << endl;
+    threads.clear();
 }
 
 
@@ -126,14 +97,8 @@ void SumaPrefijos::paraleloV2(vector<int>& input) {
         for (auto& th : threads) {
             th.join();
         }
-        
-        //cout << "resultado paralelo v2: "<<endl;
-        //for (int num : input) {
-        //    cout << num << ' ';
-        //}
-        //cout << endl;
-
         threads.clear();
+        
     }
 }
 
@@ -159,7 +124,7 @@ long long SumaPrefijos::paraleloV1Time(vector<int>& input, int thread_count){
     paraleloV1(input, thread_count);
     auto end_time = chrono::steady_clock::now();
     long long duration = chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-
+    cout << duration << "-";
     return duration;
 
 }

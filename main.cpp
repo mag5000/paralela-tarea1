@@ -22,14 +22,20 @@ vector <vector<int>> readArrayDataset(string route){
   return arrays;
 }
 
+void printArray(vector<int> array){
+
+    cout << " Vector: " << endl;
+    // Imprimir el resultado.
+    for (int num : array) {
+        cout << num << ' ';
+    }
+    cout << endl;
+}
 
 void takeTime(int exp_x_array, vector< vector<int>> arrays){
 
-  int* temp_array1;
-  int* temp_array2;
-  int* temp_array3;
-
   int temp_array_size;
+  int num_arrays = arrays.size();
   SumaPrefijos sp;
 
   long long int secuencial_time = 0;
@@ -41,64 +47,74 @@ void takeTime(int exp_x_array, vector< vector<int>> arrays){
   long long int avg_paraleloV2_time;
 
   ofstream outfile("output/results.csv");
-  outfile << "size, algorithm, time\n";
+  outfile << "Tamaño,Hilos,algoritmo,tiempo\n";
 
   //recorre el vector de vectores que serán ordenados
-  for(int k = 0; k<arrays.size(); k++){ 
+  for(int k = 0; k<num_arrays; k++){ 
 
     temp_array_size = arrays[k].size();
+    cout << "Tamaño actual: " << temp_array_size <<endl;
 
-    vector<int> temp_array1;
-    vector<int> temp_array2;
-    vector<int> temp_array3;
+    vector<int> temp_array1(temp_array_size);
+    vector<int> temp_array2(temp_array_size);
+    vector<int> temp_array3(temp_array_size);
 
-    //creamos los arrays que seran ordenados
-    for(int i = 0; i<temp_array_size; i++){
-      temp_array1.push_back(arrays[k][i]);
-      temp_array2.push_back(arrays[k][i]);
-      temp_array3.push_back(arrays[k][i]);
+    // Para cada tamaño de arreglo se ejecutará el algoritmo variando el número de threads en base 2
+    for (int n=2;n<temp_array_size;n*=2){ 
+
+        paraleloV1_time = 0;
+
+        for(int i =0;i< exp_x_array;i++){
+
+            //rellenamos/reseteamos el array 
+            for(int j = 0; j<temp_array_size; j++){
+                temp_array2[j] = arrays[k][j];
+            }
+
+            paraleloV1_time += sp.paraleloV1Time(temp_array2, n);
+            
+        }
+
+        avg_paraleloV1_time = paraleloV1_time/exp_x_array;
+        outfile << temp_array_size << "," << n << ",Paralelo V1,"<< avg_paraleloV1_time << endl;
+        cout << "Paralelo V1 con " << n << " hilos ok, en " << paraleloV1_time/exp_x_array << " mseg" << endl;
+
     }
 
-
-    // Para cada tamaño de arreglo se ejecutará la suma las veces definidas 
+    secuencial_time = 0;
+    paraleloV2_time = 0;
+    // Para cada tamaño de arreglo se ejecutarán los algoritmos secuencial y con n-1 threads
     for(int i =0;i< exp_x_array;i++){
 
-      secuencial_time += sp.secuencialTime(temp_array1);
-      paraleloV1_time += sp.paraleloV1Time(temp_array2, 4);
-      paraleloV2_time += sp.paraleloV2Time(temp_array3);
+        //rellenamos/reseteamos los arrays 
+        for(int j = 0; j<temp_array_size; j++){
+            temp_array1[j] = arrays[k][j];
+ //           temp_array3[j] = arrays[k][j];
+        }
+
+        secuencial_time += sp.secuencialTime(temp_array1);       
+ //       paraleloV2_time += sp.paraleloV2Time(temp_array3);
 
     }
 
     avg_secuencial_time = secuencial_time/exp_x_array;
-    avg_paraleloV1_time= paraleloV1_time/exp_x_array;
-    avg_paraleloV2_time= paraleloV2_time/exp_x_array;
+ //   avg_paraleloV2_time = paraleloV2_time/exp_x_array;
+    outfile << temp_array_size << "," << 1 << ",Secuencial,"<< avg_secuencial_time << endl;
+ //   outfile << temp_array_size << "," << temp_array_size-1 << ",Paralelo V2,"<< avg_paraleloV2_time << endl;
 
-    outfile << temp_array_size << ",Suma Secuencial,"<< avg_secuencial_time << endl;
-    outfile << temp_array_size << ",Paralelo V1,"<< avg_paraleloV1_time << endl;
-    outfile << temp_array_size << ",Paralelo V2,"<< avg_paraleloV2_time << endl;
+    cout << "Secuencial ok" << endl;
+ //       cout << "Paralelo V2 ok " << endl;
+
 
   }
-
   outfile.close(); 
-
 }
-
-void printArray(vector<int> array){
-
-    cout << " Vector: " << endl;
-    // Imprimir el resultado.
-    for (int num : array) {
-        cout << num << ' ';
-    }
-    cout << endl;
-}
-
 
 
 int main(){
 
-  vector<vector<int>> arrays = readArrayDataset("datasets/random_array_dataset.txt");
-  takeTime(1, arrays);
+  vector<vector<int>> arrays = readArrayDataset("datasets/random_array_dataset_test_2.txt");
+  takeTime(10, arrays);
   return 0;
 
 }
