@@ -32,9 +32,9 @@ void createRandomArrayDataset(int num_arr, int arr_min_size, int arr_max_size, i
 int main() {
 
 	int arr_min_size = 4;
-	int arr_max_size = 10000;
-	int arr_max_element = 1000;
-	int num_arr = 100;
+	int arr_max_size = 1000000;
+	int arr_max_element = 100;
+	int num_arr = 1;
 
 	createRandomArrayDataset(num_arr, arr_min_size, arr_max_size, arr_max_element);	
 

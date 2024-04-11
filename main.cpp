@@ -58,9 +58,13 @@ void takeTime(int exp_x_array, vector< vector<int>> arrays){
     vector<int> temp_array1(temp_array_size);
     vector<int> temp_array2(temp_array_size);
     vector<int> temp_array3(temp_array_size);
+    int max_threads = temp_array_size;
+    if (temp_array_size > 4096) {
+        max_threads = 4096;
+    }
 
     // Para cada tamaño de arreglo se ejecutará el algoritmo variando el número de threads en base 2
-    for (int n=2;n<temp_array_size;n*=2){ 
+    for (int n=1;n<=max_threads;n*=2){ 
 
         paraleloV1_time = 0;
 
@@ -77,35 +81,39 @@ void takeTime(int exp_x_array, vector< vector<int>> arrays){
 
         avg_paraleloV1_time = paraleloV1_time/exp_x_array;
         outfile << temp_array_size << "," << n << ",Paralelo V1,"<< avg_paraleloV1_time << endl;
-        cout << "Paralelo V1 con " << n << " hilos ok, en " << paraleloV1_time/exp_x_array << " mseg" << endl;
+    }
 
+
+    paraleloV2_time = 0;
+    // Si el arreglo es menor o igual a 4096 se ejecutará el algoritmo con n-1 threads 
+    if(temp_array_size<=4096){
+        for(int i =0;i< exp_x_array;i++){
+
+            //rellenamos/reseteamos los arrays 
+            for(int j = 0; j<temp_array_size; j++){
+                temp_array3[j] = arrays[k][j];
+            }
+
+            paraleloV2_time += sp.paraleloV2Time(temp_array3);
+        }
+        avg_paraleloV2_time = paraleloV2_time/exp_x_array;
+        outfile << temp_array_size << "," << temp_array_size-1 << ",Paralelo V2,"<< avg_paraleloV2_time << endl;
     }
 
     secuencial_time = 0;
-    paraleloV2_time = 0;
-    // Para cada tamaño de arreglo se ejecutarán los algoritmos secuencial y con n-1 threads
+    // Para cada tamaño de arreglo se ejecutarán los algoritmos secuencial 
     for(int i =0;i< exp_x_array;i++){
 
         //rellenamos/reseteamos los arrays 
         for(int j = 0; j<temp_array_size; j++){
             temp_array1[j] = arrays[k][j];
- //           temp_array3[j] = arrays[k][j];
         }
-
-        secuencial_time += sp.secuencialTime(temp_array1);       
- //       paraleloV2_time += sp.paraleloV2Time(temp_array3);
-
+        secuencial_time += sp.secuencialTime(temp_array1);    
     }
 
     avg_secuencial_time = secuencial_time/exp_x_array;
- //   avg_paraleloV2_time = paraleloV2_time/exp_x_array;
     outfile << temp_array_size << "," << 1 << ",Secuencial,"<< avg_secuencial_time << endl;
- //   outfile << temp_array_size << "," << temp_array_size-1 << ",Paralelo V2,"<< avg_paraleloV2_time << endl;
-
-    cout << "Secuencial ok" << endl;
- //       cout << "Paralelo V2 ok " << endl;
-
-
+ 
   }
   outfile.close(); 
 }
@@ -113,8 +121,8 @@ void takeTime(int exp_x_array, vector< vector<int>> arrays){
 
 int main(){
 
-  vector<vector<int>> arrays = readArrayDataset("datasets/random_array_dataset_test_2.txt");
-  takeTime(10, arrays);
+  vector<vector<int>> arrays = readArrayDataset("datasets/random_array_dataset.txt");
+  takeTime(1, arrays);
   return 0;
 
 }

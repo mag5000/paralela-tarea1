@@ -124,7 +124,7 @@ long long SumaPrefijos::paraleloV1Time(vector<int>& input, int thread_count){
     paraleloV1(input, thread_count);
     auto end_time = chrono::steady_clock::now();
     long long duration = chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-    cout << duration << "-";
+ //   cout << duration << "-";
     return duration;
 
 }
