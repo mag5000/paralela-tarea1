@@ -3,6 +3,7 @@ using namespace std;
 
 SumaPrefijos::SumaPrefijos() {}
 
+// Suma secuencial
 void SumaPrefijos::secuencial(vector<int>& input) {
    
     int n = input.size();
@@ -12,7 +13,7 @@ void SumaPrefijos::secuencial(vector<int>& input) {
 
 }
 
-
+// ALgoritmo de suma en paralelo. Recibe como parametro un arreglo y un número de hilos
 void SumaPrefijos::paraleloV1(vector<int>& input, int thread_count) {
        
     int n = input.size();
@@ -42,9 +43,10 @@ void SumaPrefijos::paraleloV1(vector<int>& input, int thread_count) {
     paraleloV2(partial_sums); 
 
     // Tercera parte: actualizar el arreglo con las sumas parciales.
-    for (int i = 0; i < thread_count - 1; ++i) {  // No es necesario para el último segmento.
+    // No es necesario para el primer segmento.
+    for (int i = 0; i < thread_count - 1; ++i) {  
         threads.emplace_back([&, i] {
-            int start = (i + 1) * n / thread_count;  // Comenzar desde el primer elemento del siguiente segmento.
+            int start = (i + 1) * n / thread_count; 
             int end = (i + 2) * n / thread_count;
 
             for (int j = start; j < end; ++j) {
@@ -60,8 +62,7 @@ void SumaPrefijos::paraleloV1(vector<int>& input, int thread_count) {
 }
 
 
-
-
+// Algoritmo de suma en paralelo. Recibe como parametro un arreglo y utiliza n-1 hilos
 void SumaPrefijos::paraleloV2(vector<int>& input) {
     int n = input.size();
     int thread_count = n-1;
@@ -71,7 +72,7 @@ void SumaPrefijos::paraleloV2(vector<int>& input) {
     condition_variable cv;
     mutex mtx;
 
-    // Realizar el algoritmo de Hillis-Steele en log(n) pasos.
+    // Realizar el algoritmo en log(n) pasos.
     for (int step = 1; step < n; step *= 2) {
 
         hilosActivos = thread_count - step + 1;

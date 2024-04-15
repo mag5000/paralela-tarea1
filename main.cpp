@@ -63,6 +63,7 @@ void takeTime(int exp_x_array, vector< vector<int>> arrays){
         max_threads = 4096;
     }
 
+
     // Para cada tamaño de arreglo se ejecutará el algoritmo variando el número de threads en base 2
     for (int n=1;n<=max_threads;n*=2){ 
 
@@ -100,6 +101,8 @@ void takeTime(int exp_x_array, vector< vector<int>> arrays){
         outfile << temp_array_size << "," << temp_array_size-1 << ",Paralelo V2,"<< avg_paraleloV2_time << endl;
     }
 
+
+
     secuencial_time = 0;
     // Para cada tamaño de arreglo se ejecutarán los algoritmos secuencial 
     for(int i =0;i< exp_x_array;i++){
@@ -118,11 +121,20 @@ void takeTime(int exp_x_array, vector< vector<int>> arrays){
   outfile.close(); 
 }
 
-
 int main(){
 
   vector<vector<int>> arrays = readArrayDataset("datasets/random_array_dataset.txt");
-  takeTime(1, arrays);
+  takeTime(10, arrays);
+
+  //  para ejecutar linux perf sobre cada funcion en especifico
+//  vector<vector<int>> arrays = readArrayDataset("datasets/random_array_dataset_perf.txt");
+//  SumaPrefijos sp;
+//  sp.paraleloV1(arrays[0],4);
+//  sp.paraleloV2(arrays[0]);
+//  sp.secuencial(arrays[0]);
+
+
+
   return 0;
 
 }

@@ -2,7 +2,7 @@
 CXX = g++
 
 # Definir las banderas del compilador
-CXXFLAGS = -Wall -std=c++11
+CXXFLAGS = -Wall -std=c++11 -pthread 
 
 # Definir los archivos de origen
 SRCS = SumaPrefijos.cpp main.cpp
